@@ -38,7 +38,8 @@
 enum hardware_board_t {
   hardware_board_unknown = 0,
   hardware_board_tinypico = 1,
-  hardware_board_pico32 = 2
+  hardware_board_pico32 = 2,
+  hardware_board_firebeetle2_esp32e = 3
 };
 
 #if defined(ARDUINO_TINYPICO)
@@ -53,8 +54,25 @@ enum hardware_board_t {
 #define HARDWARE_VERSION_MINOR 0
 #endif
 
+#if defined(ARDUINO_DFROBOT_FIREBEETLE_2_ESP32E)
+// Separate identity so OTA clients do not select TinyPICO/Pico32 firmware.
+#define HARDWARE_BOARD hardware_board_firebeetle2_esp32e
+#define HARDWARE_VERSION_MAJOR 1
+#define HARDWARE_VERSION_MINOR 0
+#endif
+
 #if !defined(HARDWARE_BOARD)
-#error "Unknown hardware board. Please define HARDWARE_BOARD so that OTA updater knows what to do."
+#error "Unsupported board. Select UM TinyPICO, ESP32 PICO-D4, or FireBeetle 2 ESP32-E in Tools > Board."
+#endif
+
+#if defined(ARDUINO_TINYPICO)
+#define HARDWARE_BOARD_NAME "TinyPICO"
+#elif defined(ARDUINO_ESP32_PICO)
+#define HARDWARE_BOARD_NAME "Pico32"
+#elif defined(ARDUINO_DFROBOT_FIREBEETLE_2_ESP32E)
+#define HARDWARE_BOARD_NAME "FireBeetle 2 ESP32-E"
+#else
+#define HARDWARE_BOARD_NAME "Custom ESP32"
 #endif
 
 DECLARE_STATE(AdapterState);

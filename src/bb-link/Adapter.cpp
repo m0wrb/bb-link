@@ -79,7 +79,9 @@ String Adapter::getAdapterName()
 void Adapter::init()
 {
   Log.traceln("Adapter: init");
+#if defined(ARDUINO_TINYPICO)
   pinMode(VBUS_SENSE_GPIO, INPUT);
+#endif
 
   statusIndicator.init();
   touchButton.init();
@@ -271,7 +273,7 @@ void Adapter::onShortPressed()
 */
 void Adapter::onWrite(BLECharacteristic *pCharacteristic)
 {
-  std::string rxData = pCharacteristic->getValue();
+  auto rxData = pCharacteristic->getValue();
 
   if (!adapterStateMachine.isInState(otaFlashState))
   {
