@@ -175,7 +175,11 @@ bool Bridge::initBTC()
 {
   Log.traceln("Bridge: initBTC");
   btSerial.enableSSP();
+#if ESP_ARDUINO_VERSION_MAJOR >= 3
+  btSerial.setPin("0000", 4);
+#else
   btSerial.setPin("0000");
+#endif
 
   btSerial.onConfirmRequest([this](uint32_t num)
                             { this->onBTConfirmRequestCallback(num); });
@@ -712,7 +716,7 @@ void Bridge::onMtuChanged(BLEServer *pServer, esp_ble_gatts_cb_param_t *param)
 */
 void Bridge::onWrite(BLECharacteristic *pCharacteristic)
 {
-  std::string txValue = pCharacteristic->getValue();
+  auto txValue = pCharacteristic->getValue();
 
   if (txValue.length() > 0)
   {
